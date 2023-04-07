@@ -1,18 +1,11 @@
-import dynamic from 'next/dynamic';
-import RequestBar from '@/components/request-bar/RequestBar';
-import RequestSettings from '@/components/request-settings/RequestSettings';
-import {
-  Col,
-  Container,
-  Row,
-  Tab,
-  Tabs,
-  ThemeProvider
-  } from 'react-bootstrap';
-import { Inter } from 'next/font/google';
-import { RequestSetting } from '@/types/components';
-import { useState } from 'react';
-import { v4 as uuid_v4 } from 'uuid';
+import dynamic from "next/dynamic";
+import RequestBar from "@/components/request-bar/RequestBar";
+import RequestSettings from "@/components/request-settings/RequestSettings";
+import { Col, Container, Row, Tab, Tabs, ThemeProvider } from "react-bootstrap";
+import { Inter } from "next/font/google";
+import { RequestSetting } from "@/types/components";
+import { useState } from "react";
+import { v4 as uuid_v4 } from "uuid";
 
 const BodyEditor = dynamic(
   () => import("@/components/body-editor/BodyEditor"),
@@ -34,7 +27,27 @@ export default function Home() {
   const [body, setBody] = useState("");
   const [result, setResult] = useState("");
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: url,
+          requestMethod: requestMethod,
+          parameters: parameters,
+          headers: headers,
+          body: body,
+        }),
+      });
+      const parsedResponse = await response.json();
+      setResult(JSON.stringify(parsedResponse, null, 2));
+    } catch (error) {
+      console.error(error);
+    }
+
     console.log(
       JSON.stringify({
         url,
