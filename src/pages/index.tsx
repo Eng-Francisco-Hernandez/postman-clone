@@ -11,7 +11,18 @@ import {
 
 const inter = Inter({ subsets: ["latin"] });
 
+import dynamic from "next/dynamic";
+import { useState } from "react";
+
+const ResultsEditor = dynamic(
+  () => import("@/components/results-editor/ResultsEditor"),
+  {
+    ssr: false,
+  }
+);
+
 export default function Home() {
+  const [parameters, setParameters] = useState([]);
   return (
     <ThemeProvider
       breakpoints={["xxxl", "xxl", "xl", "lg", "md", "sm", "xs", "xxs"]}
@@ -32,7 +43,7 @@ export default function Home() {
               <Form.Control size="sm" type="text" placeholder="URL" />
             </Col>
             <Col md={2}>
-              <Button size="sm" variant="outline-success">
+              <Button size="sm" variant="success">
                 Search
               </Button>
             </Col>
@@ -71,11 +82,25 @@ export default function Home() {
         </Row>
         <Row>
           <Col>
-            <Button size="sm" variant="outline-success">
-              Add parameter
-            </Button>
+            <Button size="sm">Add parameter</Button>
           </Col>
         </Row>
+        <Row className="mt-20">
+          <Col>Results</Col>
+        </Row>
+        <Row className="mt-20">
+          <Col md={11}>
+            <ResultsEditor
+              result={`{
+  userId: 1,
+  id: 5,
+  title:"laboriosam mollitia et enim quasi adipisci quia provident illum",
+  completed: false,
+}`}
+            />
+          </Col>
+        </Row>
+        <Row className="mt-20"></Row>
       </Container>
     </ThemeProvider>
   );
