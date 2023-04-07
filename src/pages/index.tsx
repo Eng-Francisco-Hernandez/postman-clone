@@ -1,14 +1,18 @@
-import { Inter } from "next/font/google";
-import { Col, Container, Row, Tab, Tabs, ThemeProvider } from "react-bootstrap";
-import { v4 as uuid_v4 } from "uuid";
-
-const inter = Inter({ subsets: ["latin"] });
-
-import dynamic from "next/dynamic";
-import { useState } from "react";
-import RequestBar from "@/components/request-bar/RequestBar";
-import RequestSettings from "@/components/request-settings/RequestSettings";
-import { RequestSetting } from "@/types/components";
+import dynamic from 'next/dynamic';
+import RequestBar from '@/components/request-bar/RequestBar';
+import RequestSettings from '@/components/request-settings/RequestSettings';
+import {
+  Col,
+  Container,
+  Row,
+  Tab,
+  Tabs,
+  ThemeProvider
+  } from 'react-bootstrap';
+import { Inter } from 'next/font/google';
+import { RequestSetting } from '@/types/components';
+import { useState } from 'react';
+import { v4 as uuid_v4 } from 'uuid';
 
 const BodyEditor = dynamic(
   () => import("@/components/body-editor/BodyEditor"),
