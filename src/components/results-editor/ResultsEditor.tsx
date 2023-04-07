@@ -16,10 +16,10 @@ export default function Terminal(props: TerminalProps) {
       width={"100%"}
       tabSize={2}
       value={result}
-      readOnly
       focus={false}
       showPrintMargin={false}
       highlightActiveLine={false}
+      maxLines={15}
     />
   );
 }
