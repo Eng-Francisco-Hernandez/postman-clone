@@ -12,7 +12,7 @@ export default function Terminal(props: TerminalProps) {
     <AceEditor
       theme="textmate"
       name="codeResult"
-      fontSize={18}
+      fontSize={14}
       width={"100%"}
       tabSize={2}
       value={result}

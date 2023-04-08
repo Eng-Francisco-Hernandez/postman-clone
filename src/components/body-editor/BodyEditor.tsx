@@ -19,7 +19,7 @@ export default function BodyEditor(props: BodyEditorProps) {
       mode="json"
       theme="textmate"
       name="bodyEditor"
-      fontSize={18}
+      fontSize={14}
       width={"100%"}
       showPrintMargin={false}
       showGutter={true}
