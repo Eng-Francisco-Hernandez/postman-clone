@@ -1,18 +1,20 @@
-import dynamic from 'next/dynamic';
-import RequestBar from '@/components/request-bar/RequestBar';
-import RequestSettings from '@/components/request-settings/RequestSettings';
+import dynamic from "next/dynamic";
+import RequestBar from "@/components/request-bar/RequestBar";
+import RequestSettings from "@/components/request-settings/RequestSettings";
+import { Clipboard } from "react-bootstrap-icons";
+import { RequestSetting } from "@/types/components";
+import { useState } from "react";
+import { v4 as uuid_v4 } from "uuid";
+
 import {
+  Button,
   Col,
   Container,
   Row,
   Tab,
   Tabs,
-  ThemeProvider
-  } from 'react-bootstrap';
-import { Inter } from 'next/font/google';
-import { RequestSetting } from '@/types/components';
-import { useState } from 'react';
-import { v4 as uuid_v4 } from 'uuid';
+  ThemeProvider,
+} from "react-bootstrap";
 
 const BodyEditor = dynamic(
   () => import("@/components/body-editor/BodyEditor"),
@@ -34,7 +36,27 @@ export default function Home() {
   const [body, setBody] = useState("");
   const [result, setResult] = useState("");
 
-  const sendRequest = () => {
+  const sendRequest = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          url: url,
+          requestMethod: requestMethod,
+          parameters: parameters,
+          headers: headers,
+          body: body,
+        }),
+      });
+      const parsedResponse = await response.json();
+      setResult(JSON.stringify(parsedResponse, null, 2));
+    } catch (error) {
+      console.error(error);
+    }
+
     console.log(
       JSON.stringify({
         url,
@@ -125,67 +147,85 @@ export default function Home() {
       minBreakpoint="xxs"
     >
       <Container fluid="lg">
-        <Row className="mt-50">
-          <RequestBar
-            url={url}
-            onChangeUrl={(url) => setUrl(url)}
-            onChangeRequestMethod={(method) => setRequestMethod(method)}
-            sendRequest={sendRequest}
-          />
-        </Row>
-        <Row className="mt-20">
-          <Col md={11}>
-            <Tabs
-              id="request-settings"
-              defaultActiveKey="params"
-              className="mb-3"
-            >
-              <Tab eventKey="params" title="Params">
-                <RequestSettings
-                  requestSettings={parameters}
-                  addRequestSetting={() => addRequestSetting("param")}
-                  deleteRequestSetting={(id) =>
-                    deleteRequestSetting(id, "param")
-                  }
-                  onChangeRequestSetting={(id, key, value) =>
-                    onChangeRequestSetting(id, key, value, "param")
-                  }
-                />
-              </Tab>
-              <Tab eventKey="headers" title="Headers">
-                <RequestSettings
-                  requestSettings={headers}
-                  addRequestSetting={() => addRequestSetting("header")}
-                  deleteRequestSetting={(id) =>
-                    deleteRequestSetting(id, "header")
-                  }
-                  onChangeRequestSetting={(id, key, value) =>
-                    onChangeRequestSetting(id, key, value, "header")
-                  }
-                />
-              </Tab>
-              <Tab eventKey="body" title="Body">
-                <BodyEditor
-                  body={body}
-                  onChange={(body: string) => setBody(body)}
-                />
-              </Tab>
-            </Tabs>
-          </Col>
-        </Row>
-        {result.trim() !== "" && (
-          <>
-            <Row className="mt-20">
-              <Col>Results</Col>
-            </Row>
-            <Row className="mt-20">
-              <Col md={11}>
-                <ResultsEditor result={result} />
-              </Col>
-            </Row>
-          </>
-        )}
-        <Row className="mt-20"></Row>
+        <div className="main-layout">
+          <Row className="row-centered-content">
+            <Col md={11}>
+              <RequestBar
+                url={url}
+                onChangeUrl={(url) => setUrl(url)}
+                onChangeRequestMethod={(method) => setRequestMethod(method)}
+                sendRequest={sendRequest}
+              />
+            </Col>
+          </Row>
+          <Row className="mt-20 row-centered-content">
+            <Col md={11}>
+              <Tabs
+                id="request-settings"
+                defaultActiveKey="params"
+                className="mb-3"
+              >
+                <Tab eventKey="params" title="Params">
+                  <RequestSettings
+                    requestSettings={parameters}
+                    addRequestSetting={() => addRequestSetting("param")}
+                    deleteRequestSetting={(id) =>
+                      deleteRequestSetting(id, "param")
+                    }
+                    onChangeRequestSetting={(id, key, value) =>
+                      onChangeRequestSetting(id, key, value, "param")
+                    }
+                  />
+                </Tab>
+                <Tab eventKey="headers" title="Headers">
+                  <RequestSettings
+                    requestSettings={headers}
+                    addRequestSetting={() => addRequestSetting("header")}
+                    deleteRequestSetting={(id) =>
+                      deleteRequestSetting(id, "header")
+                    }
+                    onChangeRequestSetting={(id, key, value) =>
+                      onChangeRequestSetting(id, key, value, "header")
+                    }
+                  />
+                </Tab>
+                <Tab eventKey="body" title="Body">
+                  <BodyEditor
+                    body={body}
+                    onChange={(body: string) => setBody(body)}
+                  />
+                  <Button
+                    className="mt-10"
+                    size="sm"
+                    onClick={() => setBody("")}
+                  >
+                    Clear
+                  </Button>
+                </Tab>
+              </Tabs>
+            </Col>
+          </Row>
+          {result.trim() !== "" && (
+            <>
+              <Row className="mt-20 row-centered-content">
+                <Col md={11}>Results</Col>
+              </Row>
+              <Row className="mt-10 row-centered-content">
+                <Col md={11}>
+                  <ResultsEditor result={result} />
+                  <Button
+                    className="mt-10"
+                    size="sm"
+                    onClick={() => navigator.clipboard.writeText(result)}
+                    variant="success"
+                  >
+                    <Clipboard />
+                  </Button>
+                </Col>
+              </Row>
+            </>
+          )}
+        </div>
       </Container>
     </ThemeProvider>
   );
