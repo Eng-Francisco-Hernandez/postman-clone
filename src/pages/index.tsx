@@ -1,8 +1,15 @@
 import dynamic from "next/dynamic";
 import RequestBar from "@/components/request-bar/RequestBar";
 import RequestSettings from "@/components/request-settings/RequestSettings";
-import { Col, Container, Row, Tab, Tabs, ThemeProvider } from "react-bootstrap";
-import { Inter } from "next/font/google";
+import {
+  Button,
+  Col,
+  Container,
+  Row,
+  Tab,
+  Tabs,
+  ThemeProvider,
+} from "react-bootstrap";
 import { RequestSetting } from "@/types/components";
 import { useState } from "react";
 import { v4 as uuid_v4 } from "uuid";
@@ -182,6 +189,9 @@ export default function Home() {
                   body={body}
                   onChange={(body: string) => setBody(body)}
                 />
+                <Button className="mt-10" size="sm" onClick={() => setBody("")}>
+                  Clear
+                </Button>
               </Tab>
             </Tabs>
           </Col>

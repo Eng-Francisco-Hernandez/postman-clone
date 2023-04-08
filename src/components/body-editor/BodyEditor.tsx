@@ -21,7 +21,7 @@ export default function BodyEditor(props: BodyEditorProps) {
       name="bodyEditor"
       fontSize={18}
       width={"100%"}
-      showPrintMargin={true}
+      showPrintMargin={false}
       showGutter={true}
       highlightActiveLine={true}
       tabSize={2}
