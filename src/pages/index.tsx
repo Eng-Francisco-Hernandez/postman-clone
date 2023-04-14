@@ -11,6 +11,7 @@ import {
   Col,
   Container,
   Row,
+  Spinner,
   Tab,
   Tabs,
   ThemeProvider,
@@ -35,9 +36,12 @@ export default function Home() {
   const [headers, setHeaders] = useState<RequestSetting[]>([]);
   const [body, setBody] = useState("");
   const [result, setResult] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const sendRequest = async () => {
     try {
+      setResult("");
+      setIsLoading(true);
       const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api`, {
         method: "POST",
         headers: {
@@ -53,6 +57,7 @@ export default function Home() {
       });
       const parsedResponse = await response.json();
       setResult(JSON.stringify(parsedResponse, null, 2));
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
     }
@@ -205,6 +210,13 @@ export default function Home() {
               </Tabs>
             </Col>
           </Row>
+          {isLoading && (
+            <Row className="mt-20 row-centered-content">
+              <Col md={11} className="text-center">
+                <Spinner animation="border" variant="warning" />
+              </Col>
+            </Row>
+          )}
           {result.trim() !== "" && (
             <>
               <Row className="mt-20 row-centered-content">
